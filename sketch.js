@@ -25,19 +25,18 @@ var hoverSounds = [];
 var playSound = true;
 
 function preload(){
-  hoverSounds.push(loadSound("assets/bell_a.mp3"));
-  hoverSounds.push(loadSound("assets/bell_ab.mp3"));
-  hoverSounds.push(loadSound("assets/bell_b.mp3"));
-  hoverSounds.push(loadSound("assets/bell_bb.mp3"));
-  hoverSounds.push(loadSound("assets/bell_c.mp3"));
-  hoverSounds.push(loadSound("assets/bell_c2.mp3"));
-  hoverSounds.push(loadSound("assets/bell_d.mp3"));
-  hoverSounds.push(loadSound("assets/bell_db.mp3"));
-  hoverSounds.push(loadSound("assets/bell_e.mp3"));
-  hoverSounds.push(loadSound("assets/bell_eb.mp3"));
-  hoverSounds.push(loadSound("assets/bell_f.mp3"));
-  hoverSounds.push(loadSound("assets/bell_g.mp3"));
-  hoverSounds.push(loadSound("assets/bell_gb.mp3"));
+  hoverSounds.push(loadSound(["assets/bell_a.mp3", "assets/bell_a.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_ab.mp3", "assets/bell_ab.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_b.mp3", "assets/bell_b.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_bb.mp3", "assets/bell_bb.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_c.mp3", "assets/bell_c.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_d.mp3", "assets/bell_d.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_db.mp3", "assets/bell_db.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_e.mp3", "assets/bell_e.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_eb.mp3", "assets/bell_eb.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_f.mp3", "assets/bell_f.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_g.mp3", "assets/bell_g.ogg"]));
+  hoverSounds.push(loadSound(["assets/bell_gb.mp3", "assets/bell_gb.ogg"]));
 }
 
 function setup() {
