@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 var c;
 var colorSkyDark;
 var colorSkyLight;
@@ -24,19 +26,39 @@ var saveImgButton;
 var hoverSounds = [];
 var playSound = true;
 
-function preload(){
-  hoverSounds.push(loadSound(["assets/bell_a.mp3", "assets/bell_a.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_ab.mp3", "assets/bell_ab.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_b.mp3", "assets/bell_b.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_bb.mp3", "assets/bell_bb.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_c.mp3", "assets/bell_c.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_d.mp3", "assets/bell_d.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_db.mp3", "assets/bell_db.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_e.mp3", "assets/bell_e.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_eb.mp3", "assets/bell_eb.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_f.mp3", "assets/bell_f.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_g.mp3", "assets/bell_g.ogg"]));
-  hoverSounds.push(loadSound(["assets/bell_gb.mp3", "assets/bell_gb.ogg"]));
+var loading = true;
+var loadedSounds = 0;
+var loadingStars = [];
+var loadingConstellation = [
+  [0, 0],
+  [-12, 1],
+  [-10, 10],
+  [-15, 28],
+  [-28, 29],
+  [-16, 40],
+  [-9, 36],
+  [1, 17],
+  [12, 5],
+  [35, -8],
+  [40, -25],
+  [11, -15]
+];
+
+function addSound(filename){
+  loadSound(["assets/" + filename + ".mp3", "assets/" + filename + ".ogg"], soundLoaded);
+
+  function soundLoaded(sound){
+    console.log(filename);
+    hoverSounds.push(sound);
+    loadedSounds++;
+    if(loadedSounds == 12){
+      loading = false;
+      makeControls();
+      for(var i = 0; i < hoverSounds.length; i++){
+        hoverSounds[i].setVolume(0.1);
+      }
+    }
+  }
 }
 
 function setup() {
@@ -45,28 +67,76 @@ function setup() {
   colorSkyLight = color('#302b40');
 
   resetSketch();
-  makeControls();
 
-  for(var i = 0; i < hoverSounds.length; i++){
-    hoverSounds[i].setVolume(0.1);
+  for(var a = 0; a < 64; a++){
+    loadingStars.push([random(-width/10, width/10), random(-height/10, height/10)]);
   }
+
+  addSound("bell_a");
+  addSound("bell_ab");
+  addSound("bell_b");
+  addSound("bell_bb");
+  addSound("bell_c");
+  addSound("bell_d");
+  addSound("bell_db");
+  addSound("bell_e");
+  addSound("bell_eb");
+  addSound("bell_f");
+  addSound("bell_g");
+  addSound("bell_gb");
 }
 
 function draw() {
-  background(colorSkyDark);
-  image(imageBG, 0, 0);
+  if(!loading){
+    background(colorSkyDark);
+    image(imageBG, 0, 0);
 
-  update();
+    update();
 
-  for(var a = 0; a < starArray.length; a++){
-    starArray[a].draw();
+    for(var a = 0; a < starArray.length; a++){
+      starArray[a].draw();
+      }
+
+    for(var b = 0; b < constellationLines.length; b++){
+      stroke(255, 120 + noise(noiseOffset) * 30);
+      strokeWeight(1);
+      line(constellationLines[b][0], constellationLines[b][1],
+           constellationLines[b][2], constellationLines[b][3]);
     }
-
-  for(var b = 0; b < constellationLines.length; b++){
-    stroke(255, 120 + noise(noiseOffset) * 30);
-    strokeWeight(1);
-    line(constellationLines[b][0], constellationLines[b][1],
-         constellationLines[b][2], constellationLines[b][3]);
+  }else{
+    background(245);
+    fill(10);
+    noStroke();
+    textSize(30);
+    textFont("sans-serif");
+    textAlign(CENTER, CENTER);
+    text("loading", width/2, height/2);
+    translate(width/2, height/3);
+    stroke(40, 200);
+    var constScale = 3;
+    for(var i = 0 ; i < loadedSounds; i++){
+      if(i < loadingConstellation.length - 1){
+        line(loadingConstellation[i][0] * constScale,
+            loadingConstellation[i][1] * constScale,
+            loadingConstellation[i + 1][0] * constScale,
+            loadingConstellation[i + 1][1] * constScale);
+      } else{
+        line(loadingConstellation[0][0] * constScale,
+            loadingConstellation[0][1] * constScale,
+            loadingConstellation[i][0] * constScale,
+            loadingConstellation[i][1] * constScale);
+      }
+    }
+    noStroke();
+    for(var k = 0; k < loadingStars.length; k++){
+      var randSize = noise(millis() * 0.001, loadingStars[k][0], loadingStars[k][1]) + 1;
+      ellipse(loadingStars[k][0] * constScale, loadingStars[k][1] * constScale, randSize, randSize);
+    }
+    for(var j = 0 ; j < loadingConstellation.length; j++){
+      var rand = noise(millis() * 0.001, loadingConstellation[j][0], loadingConstellation[j][1]) * 2 + 1;
+      ellipse(loadingConstellation[j][0] * constScale, loadingConstellation[j][1] * constScale,
+        rand, rand);
+    }
   }
 }
 
@@ -151,7 +221,7 @@ class Star{
   update(){
     if(this.isMouseOver() && this.markerSize < maxStarSize * 2.5){
       this.markerSize += 0.5;
-    } else if(this.isMouseOver() == false){
+    } else if(this.isMouseOver() === false){
       this.markerSize = 0;
     }
     this.shine = this.shineBase + noise(this.x, this.y, noiseOffset) * 100;
